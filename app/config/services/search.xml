@@ -4,15 +4,30 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
 
+        <service id="app.search.factory" class="AppBundle\Search\SearchFactory">
+            <argument type="service" id="sonata.core.slugify.cocur" />
+        </service>
+
+        <service id="app.search.validator" class="AppBundle\Search\SearchValidator">
+            <argument type="service" id="validator" />
+        </service>
+
+        <service id="app.search.engine" class="AppBundle\Search\SearchEngine">
+            <argument type="service" id="cache.app" />
+            <argument type="service" id="app.geocoder" />
+            <argument type="service" id="router" />
+            <argument type="service" id="app.repository.committee" />
+            <argument type="service" id="app.repository.event" />
+        </service>
+
         <service id="app.search.search_results_filter" class="AppBundle\Search\SearchParametersFilter">
             <argument type="service" id="app.geocoder"/>
             <argument type="service" id="cache.app"/>
         </service>
 
         <service id="app.search.search_results_provider" class="AppBundle\Search\SearchResultsProvider">
-            <argument type="service" id="app.repository.committee"/>
-            <argument type="service" id="app.repository.committee_membership"/>
-            <argument type="service" id="app.repository.event"/>
+            <argument type="service" id="app.repository.committee" />
+            <argument type="service" id="app.repository.event" />
         </service>
 
     </services>

@@ -1,0 +1,13 @@
+{% extends 'search/layout.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        Kernel.onLoad(function() {
+            App.runSearchEvents('{{ defaultLocation|e('js') }}');
+        });
+    </script>
+{% endblock %}
+
+{% block page_title 'Événements' %}
+{% block search_subtitle 'Les événements sont ouverts à tous, adhérents ou non.' %}

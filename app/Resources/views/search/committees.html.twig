@@ -1,0 +1,13 @@
+{% extends 'search/layout.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        Kernel.onLoad(function() {
+            App.runSearchCommittees('{{ defaultLocation|e('js') }}');
+        });
+    </script>
+{% endblock %}
+
+{% block page_title 'Comités' %}
+{% block search_subtitle 'Recherchez les comités En Marche proches de chez vous.' %}

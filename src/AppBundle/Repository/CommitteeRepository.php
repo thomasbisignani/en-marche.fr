@@ -4,7 +4,10 @@ namespace AppBundle\Repository;
 
 use AppBundle\Entity\Committee;
 use AppBundle\Geocoder\Coordinates;
+use AppBundle\Search\Search;
+use AppBundle\Search\SearchEngine;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Ramsey\Uuid\Uuid;
 
 class CommitteeRepository extends EntityRepository
@@ -166,5 +169,54 @@ class CommitteeRepository extends EntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param Search $search
+     * @return Committee[]
+     */
+    public function findSearchResults(Search $search): array
+    {
+        $qb = $this->createSearchQueryBuilder($search);
+        $qb ->select('n', $this->getNearbyExpression().' AS HIDDEN distance')
+            ->orderBy('distance', 'ASC')
+            ->setFirstResult(($search->getPage() - 1) * SearchEngine::MAX_RESULTS)
+            ->setMaxResults(SearchEngine::MAX_RESULTS);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countSearchResults(Search $search): int
+    {
+        $qb = $this->createSearchQueryBuilder($search);
+        $qb->select('COUNT(n) as nb');
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * Create a query builder suited to the API search.
+     */
+    private function createSearchQueryBuilder(Search $search): QueryBuilder
+    {
+        if (!$search->getResolvedCoordinates()) {
+            throw new \LogicException('The search location is not resolved and cannot be used.');
+        }
+
+        $qb = $this
+            ->createQueryBuilder('n')
+            ->where('n.status = :status')
+            ->andWhere($this->getNearbyExpression().' < :distance_max')
+            ->setParameter('distance_max', $search->getRadius())
+            ->setParameter('status', Committee::APPROVED)
+            ->setParameter('latitude', $search->getResolvedCoordinates()->getLatitude())
+            ->setParameter('longitude', $search->getResolvedCoordinates()->getLongitude());
+
+        foreach($search->getKeywords() as $i => $keyword) {
+            $qb->andWhere($qb->expr()->like('LOWER(n.name)', ':keyword'.$i));
+            $qb->setParameter('keyword'.$i, '%'.$keyword.'%');
+        }
+
+        return $qb;
     }
 }

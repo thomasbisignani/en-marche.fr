@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&amp;libraries=places"></script>
+{% endblock %}
+
+{% block content %}
+    <main class="search">
+        <header class="l__wrapper space--60-0 text--center">
+            <h1 class="text--large search-title">{{ block('page_title') }}</h1>
+            <h2 class="text--body text--normal">{% block search_subtitle %}{% endblock %}</h2>
+        </header>
+
+        <div class="l__wrapper">
+            <div id="search-engine">
+                <div class="search__bar background--blue space--30 text--white text--body">
+                    <div class="search__bar__options">
+                        <input class="search-box" disabled="disabled" placeholder="Recherche">
+
+                        <div>
+                            dans un rayon de
+                            <select disabled="disabled">
+                                <option>100</option>
+                            </select>
+                            autour de
+                            <input class="search-city" disabled="disabled" placeholder="Ville ou code postal" />
+                        </div>
+                    </div>
+
+                    {% set currentRoute = app.request.attributes.get('_route') %}
+
+                    <ul class="search__bar__toggle">
+                        <li class="{{ currentRoute == 'app_search_events' ? 'active' }}">
+                            <a href="{{ path('app_search_events') }}" class="link--no-decor">Événements</a>
+                        </li>
+                        <li class="{{ currentRoute == 'app_search_committees' ? 'active' }}">
+                            <a href="{{ path('app_search_committees') }}" class="link--no-decor">Comités</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="search__results app_search_committees">
+                    <div class="search__loader"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

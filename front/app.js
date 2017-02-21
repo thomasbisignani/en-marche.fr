@@ -80,6 +80,18 @@ class App {
             module.default();
         });
     }
+
+    runSearchCommittees(defaultLocation) {
+        System.import('pages/search_committees').catch((error) => { throw error; }).then((module) => {
+            module.default(defaultLocation);
+        });
+    }
+
+    runSearchEvents(defaultLocation) {
+        System.import('pages/search_events').catch((error) => { throw error; }).then((module) => {
+            module.default(defaultLocation);
+        });
+    }
 }
 
 window.App = new App();
