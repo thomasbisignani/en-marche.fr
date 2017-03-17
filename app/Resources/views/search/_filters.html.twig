@@ -1,9 +1,16 @@
-<div class="search__bar background--blue space--30 text--white text--body">
+<ul class="search__bar__toggle">
+    {% set currentRoute = app.request.attributes.get('_route') %}
+    <li class="{{ currentRoute == 'app_search_events' ? 'active' }}">
+        <a href="{{ path('app_search_events') }}" class="link--no-decor">Événements</a>
+    </li>
+    <li class="{{ currentRoute == 'app_search_committees' ? 'active' }}">
+        <a href="{{ path('app_search_committees') }}" class="link--no-decor">Comités</a>
+    </li>
+</ul>
+<div class="search__bar space--20 text--white text--body">
     <div class="search__bar__options">
-        <input class="search-box"name="{{ constant('AppBundle\\Search\\SearchParametersFilter::PARAMETER_QUERY') }}" placeholder="Recherche">
-
         <div>
-            dans un rayon de
+            Rechercher dans un rayon de
             {# this widget will be embedded in the ribbon text #}
             <select name="{{ constant('AppBundle\\Search\\SearchParametersFilter::PARAMETER_RADIUS') }}">
                 {% for option in constant('AppBundle\\Search\\SearchParametersFilter::RADII') %}
@@ -17,14 +24,5 @@
             <input type="hidden" name="{{ constant('AppBundle\\Search\\SearchParametersFilter::PARAMETER_TYPE') }}" value="{{ search_type }}"/>
         </div>
     </div>
-
-    <ul class="search__bar__toggle">
-        {% set currentRoute = app.request.attributes.get('_route') %}
-        <li class="{{ currentRoute == 'app_search_events' ? 'active' }}">
-            <a href="{{ path('app_search_events') }}" class="link--no-decor">Événements</a>
-        </li>
-        <li class="{{ currentRoute == 'app_search_committees' ? 'active' }}">
-            <a href="{{ path('app_search_committees') }}" class="link--no-decor">Comités</a>
-        </li>
-    </ul>
+    <a class="btn btn--blue">Rechercher</a>
 </div>
