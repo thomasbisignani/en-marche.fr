@@ -44,7 +44,7 @@ class PageControllerTest extends SqliteWebTestCase
 
         $this->assertResponseStatusCode(Response::HTTP_OK, $this->client->getResponse());
         $this->assertSame(1, $crawler->filter('html:contains("Evénements en cours ou à venir")')->count());
-        $this->assertContains('4 événements', $crawler->filter('.committees-map__counter')->first()->text());
+        $this->assertContains('5 événements', $crawler->filter('.committees-map__counter')->first()->text());
     }
 
     public function providePages()
