@@ -21,9 +21,9 @@ final class MembershipUtils
         $this->session = $session;
     }
 
-    public function createRegisteringDonation(Adherent $adherent)
+    public function createRegisteringDonation(Adherent $adherent, string $clientIp)
     {
-        $donationRequest = $this->factory->createFromAdherent($adherent);
+        $donationRequest = $this->factory->createFromAdherent($adherent, $clientIp);
 
         $this->session->set(self::REGISTERING_DONATION, $donationRequest);
         $this->session->set(self::NEW_ADHERENT_ID, $adherent->getId());

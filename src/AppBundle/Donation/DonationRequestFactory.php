@@ -8,12 +8,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DonationRequestFactory
 {
-    public function createFromRequest(Request $request, float $amount, $currentUser = null): DonationRequest
+    public function createFromRequest(Request $request, float $amount, Adherent $currentUser = null): DonationRequest
     {
         if ($currentUser instanceof Adherent) {
-            $donation = DonationRequest::createFromAdherent($currentUser, $amount);
+            $donation = DonationRequest::createFromAdherent($currentUser, $request->getClientIp(), $amount);
         } else {
-            $donation = new DonationRequest($amount);
+            $donation = DonationRequest::createFromGuest($request->getClientIp(), $amount);
         }
 
         if (($gender = $request->query->get('ge')) && in_array($gender, ['male', 'female'], true)) {
@@ -63,9 +63,9 @@ class DonationRequestFactory
         return $donation;
     }
 
-    public function createFromAdherent(Adherent $adherent, int $defaultAmount = 50): DonationRequest
+    public function createFromAdherent(Adherent $adherent, string $clientIp, int $defaultAmount = 50): DonationRequest
     {
-        $donation = DonationRequest::createFromAdherent($adherent);
+        $donation = DonationRequest::createFromAdherent($adherent, $clientIp);
         $donation->setAmount($defaultAmount);
 
         return $donation;

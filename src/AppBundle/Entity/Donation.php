@@ -2,12 +2,11 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Exception\InitializedEntityException;
 use AppBundle\Geocoder\GeoPointInterface;
 use AppBundle\Utils\EmojisRemover;
 use Doctrine\ORM\Mapping as ORM;
 use libphonenumber\PhoneNumber;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Table(name="donations")
@@ -76,6 +75,8 @@ class Donation implements GeoPointInterface
     private $createdAt;
 
     public function __construct(
+        UuidInterface $uuid,
+        string $clientIp,
         int $amount,
         string $gender,
         string $firstName,
@@ -84,6 +85,8 @@ class Donation implements GeoPointInterface
         PostAddress $postAddress,
         ?PhoneNumber $phone
     ) {
+        $this->uuid = $uuid;
+        $this->clientIp = $clientIp;
         $this->amount = $amount;
         $this->gender = $gender;
         $this->firstName = EmojisRemover::remove($firstName);
@@ -97,20 +100,10 @@ class Donation implements GeoPointInterface
 
     public function __toString()
     {
-        return $this->lastName.' '.$this->firstName.' ('.($this->amount / 100).' €)';
+        return $this->lastName.' '.$this->firstName.' ('.$this->getAmountInEuros().' €)';
     }
 
-    public function init(string $clientIp)
-    {
-        if (null !== $this->uuid) {
-            throw new InitializedEntityException($this);
-        }
-
-        $this->uuid = Uuid::uuid4();
-        $this->clientIp = $clientIp;
-    }
-
-    public function finish(array $payboxPayload)
+    public function finish(array $payboxPayload): void
     {
         $this->finished = true;
         $this->payboxPayload = $payboxPayload;
@@ -122,6 +115,20 @@ class Donation implements GeoPointInterface
 
         if ($this->payboxResultCode === '00000') {
             $this->donatedAt = new \DateTime();
+        }
+    }
+
+    public function getTransactionId(): ?string
+    {
+        if (isset($this->payboxPayload['transaction'])) {
+            return $this->payboxPayload['transaction'];
+        }
+    }
+
+    public function getCardType(): ?string
+    {
+        if (isset($this->payboxPayload['card_type'])) {
+            return $this->payboxPayload['card_type'];
         }
     }
 

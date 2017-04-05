@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Donation\DonationView;
 use AppBundle\Entity\Adherent;
 use AppBundle\Entity\AdherentActivationToken;
 use AppBundle\Exception\AdherentAlreadyEnabledException;
@@ -39,7 +40,7 @@ class MembershipController extends Controller
             $this->get('app.membership_request_handler')->handle($membership);
 
             if ($membership->hasAdherent()) {
-                $this->get('app.membership_utils')->createRegisteringDonation($membership->getAdherent());
+                $this->get('app.membership_utils')->createRegisteringDonation($membership->getAdherent(), $request->getClientIp());
             }
 
             return $this->redirectToRoute('app_membership_donate');
@@ -86,16 +87,17 @@ class MembershipController extends Controller
             }
 
             if ($form->isValid()) {
-                $donation = $this->get('app.donation_request.handler')->handle($donationRequest, $request->getClientIp());
+                $this->get('app.donation_request.handler')->handle($donationRequest, $request->getClientIp());
 
                 return $this->redirectToRoute('donation_pay', [
-                    'uuid' => $donation->getUuid()->toString(),
+                    'uuid' => $donationRequest->getUuid()->toString(),
                 ]);
             }
         }
 
         return $this->render('membership/donate.html.twig', [
             'form' => $form->createView(),
+            'donation' => DonationView::createFromDonationRequest($donationRequest),
         ]);
     }
 

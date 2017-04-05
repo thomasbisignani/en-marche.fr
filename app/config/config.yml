@@ -56,13 +56,14 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     globals:
-        assets_hash:          "%assets_hash%"
-        sentry_dsn:           "%env(SENTRY_PUBLIC_DSN)%"
-        enable_canary:        "%env(ENABLE_CANARY)%"
-        recaptcha_public_key: "%env(RECAPTCHA_PUBLIC_KEY)%"
-        google_maps_api_key:  "%env(GMAPS_API_KEY)%"
-        url_legacy:           "https://adherents.en-marche.fr"
-        legacy_adhesion:      "https://adherents.en-marche.fr/adherer.html"
+        assets_hash:                "%assets_hash%"
+        sentry_dsn:                 "%env(SENTRY_PUBLIC_DSN)%"
+        enable_canary:              "%env(ENABLE_CANARY)%"
+        recaptcha_public_key:       "%env(RECAPTCHA_PUBLIC_KEY)%"
+        google_maps_api_key:        "%env(GMAPS_API_KEY)%"
+        google_tag_manager_api_key: "%env(GTM_API_KEY)%"
+        url_legacy:                 "https://adherents.en-marche.fr"
+        legacy_adhesion:            "https://adherents.en-marche.fr/adherer.html"
     form_themes:
         - 'form_theme.html.twig'
         - 'SonataCoreBundle:Form:datepicker.html.twig'

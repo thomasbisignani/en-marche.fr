@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Donation\DonationView;
 use AppBundle\Entity\Donation;
 use AppBundle\Form\DonationRequestType;
 use Ramsey\Uuid\Uuid;
@@ -32,9 +33,7 @@ class DonationController extends Controller
      */
     public function informationsAction(Request $request)
     {
-        $amount = (float) $request->query->get('montant');
-
-        if (!$amount) {
+        if (!$amount = (float) $request->query->get('montant')) {
             return $this->redirectToRoute('donation_index');
         }
 
@@ -43,16 +42,16 @@ class DonationController extends Controller
         $form = $this->createForm(DonationRequestType::class, $donationRequest, ['locale' => $request->getLocale()]);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
-            $donation = $this->get('app.donation_request.handler')->handle($donationRequest, $request->getClientIp());
+            $this->get('app.donation_request.handler')->handle($donationRequest, $request->getClientIp());
 
             return $this->redirectToRoute('donation_pay', [
-                'uuid' => $donation->getUuid()->toString(),
+                'uuid' => $donationRequest->getUuid()->toString(),
             ]);
         }
 
         return $this->render('donation/informations.html.twig', [
             'form' => $form->createView(),
-            'donation' => $donationRequest,
+            'donation' => DonationView::createFromDonationRequest($donationRequest),
         ]);
     }
 
@@ -114,13 +113,11 @@ class DonationController extends Controller
             $parameters['phn'] = $donation->getPhone()->getNationalNumber();
         }
 
-        $retryUrl = $this->generateUrl('donation_informations', $parameters);
-
         return $this->render('donation/result.html.twig', [
             'successful' => $donation->isSuccessful(),
             'error_code' => $request->query->get('code'),
-            'donation' => $donation,
-            'retry_url' => $retryUrl,
+            'donation' => DonationView::createFromDonation($donation),
+            'retry_url' => $this->generateUrl('donation_informations', $parameters),
             'is_in_subscription_process' => $this->get('app.membership_utils')->isInSubscriptionProcess(),
         ]);
     }

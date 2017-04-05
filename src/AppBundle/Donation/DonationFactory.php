@@ -17,6 +17,8 @@ class DonationFactory
     public function createFromDonationRequest(DonationRequest $request): Donation
     {
         return new Donation(
+            $request->getUuid(),
+            $request->getClientIp(),
             $request->getAmount() * 100,
             $request->getGender(),
             $request->getFirstName(),
