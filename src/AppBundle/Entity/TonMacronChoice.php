@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -23,10 +24,10 @@ final class TonMacronChoice
     const STEP_SELF_REASONS = 'self_reasons';
 
     const STEPS = [
-        self::STEP_FRIEND_PROFESSIONAL_POSITION,
-        self::STEP_FRIEND_PROJECT,
-        self::STEP_FRIEND_INTERESTS,
-        self::STEP_SELF_REASONS,
+        self::STEP_FRIEND_PROFESSIONAL_POSITION => 1,
+        self::STEP_FRIEND_PROJECT => 2,
+        self::STEP_FRIEND_INTERESTS => 3,
+        self::STEP_SELF_REASONS => 4,
     ];
 
     /**
@@ -49,31 +50,31 @@ final class TonMacronChoice
      */
     private $content;
 
-    public function __construct(UuidInterface $uuid, string $step, string $contentKey, string $label, string $content)
+    public function __construct(UuidInterface $uuid = null, string $step = null, string $contentKey = null, string $label = null, string $content = null)
     {
-        $this->uuid = $uuid;
+        $this->uuid = $uuid ?: Uuid::uuid4();
         $this->step = $step;
-        $this->label = $label;
         $this->contentKey = $contentKey;
+        $this->label = $label;
         $this->content = $content;
     }
 
-    public function getStep(): string
+    public function getStep(): ?string
     {
         return $this->step;
     }
 
-    public function getLabel(): string
+    public function getLabel(): ?string
     {
         return $this->label;
     }
 
-    public function getContent(): string
+    public function getContent(): ?string
     {
         return $this->content;
     }
 
-    public function getContentKey(): string
+    public function getContentKey(): ?string
     {
         return $this->contentKey;
     }
