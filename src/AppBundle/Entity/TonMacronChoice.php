@@ -17,6 +17,9 @@ final class TonMacronChoice
     use EntityIdentityTrait;
     use EntityCrudTrait;
 
+    const MAIL_INTRODUCTION_KEY = 'S00C01';
+    const MAIL_CONCLUSION_KEY = 'S00C02';
+
     const STEP_FRIEND_PROFESSIONAL_POSITION = 'friend_professional_position';
     const STEP_FRIEND_PROJECT = 'friend_project';
     const STEP_FRIEND_INTERESTS = 'friend_interests';
