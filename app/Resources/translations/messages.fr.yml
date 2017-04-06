@@ -102,7 +102,7 @@ newsletter.invitation.form.invite_sent: Votre invitation a bien été envoyée !
 #
 ton_macron.invitation_form.friend_first_name: Son prénom
 ton_macron.invitation_form.friend_age: Son âge
-ton_macron.invitation_form.friend_position: Son status professionnel
+ton_macron.invitation_form.friend_position: Son statut professionnel
 ton_macron.invitation_form.fill_step_1: Je continue
 ton_macron.invitation_form.fill_step_2: Continuer
 ton_macron.invitation_form.fill_step_3: Continuer
